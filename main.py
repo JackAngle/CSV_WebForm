@@ -68,7 +68,7 @@ def filter_file_path_out(data):
     for key, value in data.items():
         click.echo(key)
     option = click.prompt('PLEASE SELECT KEY(S) THAT CONTAINS FILE PATH! '
-                          'MULTIPLE VALUES IS OK. SEPARATE BY SPACE'
+                          'MULTIPLE VALUES IS OK. SEPARATE BY SPACE. \n'
                           'YOUR INPUT', type=str)
     if option is not None:
         for item in option.split(' '):
@@ -82,9 +82,15 @@ def filter_file_path_out(data):
 # Process keys:
 #  Check input, if -1 then Exit program
 def process_keys(option):
+    # Convert input str to int
+    try:
+        option = int(option)
+    except TypeError as e:
+        print('TypeError')
+
     while option not in (-1, 0, 1, 2):
-        click.echo('Invalid argument!\n')
-        option = click.prompt('Please select a valid convert type for keys: \n '
+        click.echo('Invalid argument for data dict\'s keys or not entered yet.\n')
+        option = click.prompt('Please select a valid convert type for data dict\'s keys: \n '
                               '-1 - Exit program\n'
                               '0  - No convert\n'
                               '1  - All uppercase\n'
@@ -98,8 +104,14 @@ def process_keys(option):
 # Process values:
 #  Check input, if -1 then Exit program
 def process_values(option):
+    # Convert input str to int
+    try:
+        option = int(option)
+    except TypeError as e:
+        print('TypeError')
+
     while option not in (-1, 0, 1, 2):
-        click.echo('Invalid argument!\n')
+        click.echo('Invalid argument for data dict\'s values or not entered yet.\n')
         option = click.prompt('Please select a valid convert type for values: \n '
                               '-1 - Exit program\n'
                               '0  - No convert\n'
@@ -131,7 +143,8 @@ def process_spaces_in_keys(data, replace_character: str):
               default=None)
 def get_csv_data(file_path, url, key_convert, value_convert, space_replace):
     while file_path == '':
-        file_path = click.prompt('Please enter a valid file path to csv file', type=str)
+        file_path = click.prompt('Please enter a valid file path to csv file '
+                                 '[E.g: file.csv]', type=str)
 
     # Read & get data from csv file
     data = open_csv(file_path)
@@ -156,8 +169,10 @@ def get_csv_data(file_path, url, key_convert, value_convert, space_replace):
 # Function for sending request to webform
 
 def webformrequest(data, files, web_form_url):
-    if web_form_url is not web_form_url.endswith('/'):
-        web_form_url = web_form_url + '/'
+    print(repr(web_form_url))
+    web_form_url = 'http://' + web_form_url
+    # if web_form_url is not web_form_url.endswith('/'):
+    #     web_form_url = web_form_url + '/'
     client = requests.Session()
     client.get(web_form_url)  # sets_cookies
 
